@@ -1,11 +1,13 @@
 ## Flutter Add to Cart
-    This project demonstrates a simple add-to-cart functionality in a Flutter application. It includes fetching menu items from an API, displaying them in a list, and calculating the subtotal, VAT, and total amounts dynamically based on the items added to the cart.
+This project demonstrates a simple add-to-cart functionality in a Flutter application. It includes fetching menu items from an API, displaying them in a list, and calculating the subtotal, VAT, and total amounts dynamically based on the items added to the cart.
+
 ![intro](intro.gif)
-    Features
-        Fetch menu items from an API and display them in a list.
-        Increment and decrement item counts for each menu item.
-        Calculate and display the subtotal, VAT, and total amounts dynamically.
-        User-friendly UI with animations and visual feedback
+
+## Features
+    Fetch menu items from an API and display them in a list.
+    Increment and decrement item counts for each menu item.
+    Calculate and display the subtotal, VAT, and total amounts dynamically.
+    User-friendly UI with animations and visual feedback
        
      lib/
         ├── main.dart
