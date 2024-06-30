@@ -29,361 +29,383 @@ class _AddToCartScreenState extends State<AddToCartScreen> {
     final foodViewModel = Provider.of<FoodViewModel>(context, listen: false);
     foodViewModel.FoodListFetch(context);
   }
-
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirm Exit'),
+        content: const Text('Are you sure you want to exit the app?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Yes'),
+          ),
+        ],
+      ),
+    )) ??
+        false;
+  }
   @override
   Widget build(BuildContext context) {
     return Consumer<FoodViewModel>(
       builder: (context, foodViewModel, child) {
         final menu = foodViewModel.menu;
 
-        return Scaffold(
-          backgroundColor: Colors.white,
-          body:Provider.of<InternetConnectionStatus>(context) ==
-              InternetConnectionStatus.disconnected
-              ? NoInternetWidget(
-            onPressed: () {
-              _loadData(context);
-            },
-          ): SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 15.h),
-                    child: Container(
-                      height: 478.h,
-                      width: 328.w,
-                      color: AppColors.baseColorOffWhite,
-                      child: Column(
-                        children: [
-                          Container(
-                            height: 60.h,
-                            width: 328.w,
-                            decoration: const BoxDecoration(
-                              gradient: AppColors.linearGradient,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10),
+        return WillPopScope(
+          onWillPop: _onWillPop,
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            body:Provider.of<InternetConnectionStatus>(context) ==
+                InternetConnectionStatus.disconnected
+                ? NoInternetWidget(
+              onPressed: () {
+                _loadData(context);
+              },
+            ): SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16.w, vertical: 15.h),
+                      child: Container(
+                        height: 478.h,
+                        width: 328.w,
+                        color: AppColors.baseColorOffWhite,
+                        child: Column(
+                          children: [
+                            Container(
+                              height: 60.h,
+                              width: 328.w,
+                              decoration: const BoxDecoration(
+                                gradient: AppColors.linearGradient,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10),
+                                ),
                               ),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 10.h, left: 10.w),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Text(
-                                        'Breakfast',
-                                        style: TextStyles.caption1Strong(
-                                            AppColors.baseColorWhite),
-                                      ),
-                                      Text(
-                                        'Vat(5%) Service Charge(5%)',
-                                        style: TextStyles.body2(
-                                            AppColors.baseColorWhite),
-                                      ),
-                                    ],
-                                  ),
-                                  IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(
-                                      Icons.keyboard_arrow_up,
-                                      color: AppColors.baseColorWhite,
-                                      size: 25.sp,
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 10.h, left: 10.w),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Text(
+                                          'Breakfast',
+                                          style: TextStyles.caption1Strong(
+                                              AppColors.baseColorWhite),
+                                        ),
+                                        Text(
+                                          'Vat(5%) Service Charge(5%)',
+                                          style: TextStyles.body2(
+                                              AppColors.baseColorWhite),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                ],
+                                    IconButton(
+                                      onPressed: () {},
+                                      icon: Icon(
+                                        Icons.keyboard_arrow_up,
+                                        color: AppColors.baseColorWhite,
+                                        size: 25.sp,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(height: 20.h),
-                          foodViewModel.isLoadingState
-                              ? const Center(
-                                  child: CircularProgressIndicator(
-                                      color: AppColors.primaryColor),
-                                )
-                              : menu != null
-                                  ? SizedBox(
-                                      height: 376.h,
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        scrollDirection: Axis.vertical,
-                                        physics:
-                                            const AlwaysScrollableScrollPhysics(),
-                                        itemCount: menu.length,
-                                        itemBuilder: (context, index) {
-                                          return FadeInAnimation(
-                                            direction: FadeInDirection.btt,
-                                            delay: .5 + index,
-                                            fadeOffset: index == 0 ? 80 : 80.0 * index,
-                                            child: Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 10.h),
-                                              child: Column(
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                    children: [
-                                                      DottedBorder(
-                                                        color: AppColors
-                                                            .primaryColor,
-                                                        borderType:
-                                                            BorderType.RRect,
-                                                        strokeWidth: 1.w,
-                                                        radius:
-                                                            const Radius.circular(
-                                                                10),
-                                                        child: Container(
-                                                          height: 80.h,
-                                                          width: 80.w,
-                                                          decoration:
-                                                              const BoxDecoration(
-                                                            color: AppColors
-                                                                .baseColorLightOrange,
-                                                          ),
-                                                          child: Padding(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        10.w,
-                                                                    vertical:
-                                                                        10.w),
-                                                            child: CircleAvatar(
-                                                              backgroundColor:
-                                                                  Colors.black,
-                                                              child: AnyImageView(
-                                                                imagePath:
-                                                                    '${menu[index].image}',
-                                                                width: 51.w,
-                                                                height: 51.h,
+                            SizedBox(height: 20.h),
+                            foodViewModel.isLoadingState
+                                ? const Center(
+                                    child: CircularProgressIndicator(
+                                        color: AppColors.primaryColor),
+                                  )
+                                : menu != null
+                                    ? SizedBox(
+                                        height: 376.h,
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          scrollDirection: Axis.vertical,
+                                          physics:
+                                              const AlwaysScrollableScrollPhysics(),
+                                          itemCount: menu.length,
+                                          itemBuilder: (context, index) {
+                                            return FadeInAnimation(
+                                              direction: FadeInDirection.btt,
+                                              delay: .5 + index,
+                                              fadeOffset: index == 0 ? 80 : 80.0 * index,
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 10.h),
+                                                child: Column(
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                      children: [
+                                                        DottedBorder(
+                                                          color: AppColors
+                                                              .primaryColor,
+                                                          borderType:
+                                                              BorderType.RRect,
+                                                          strokeWidth: 1.w,
+                                                          radius:
+                                                              const Radius.circular(
+                                                                  10),
+                                                          child: Container(
+                                                            height: 80.h,
+                                                            width: 80.w,
+                                                            decoration:
+                                                                const BoxDecoration(
+                                                              color: AppColors
+                                                                  .baseColorLightOrange,
+                                                            ),
+                                                            child: Padding(
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          10.w,
+                                                                      vertical:
+                                                                          10.w),
+                                                              child: CircleAvatar(
+                                                                backgroundColor:
+                                                                    Colors.black,
+                                                                child: AnyImageView(
+                                                                  imagePath:
+                                                                      '${menu[index].image}',
+                                                                  width: 51.w,
+                                                                  height: 51.h,
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                      Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            '${menu[index].name}',
-                                                            style: TextStyles
-                                                                .body2Strong(AppColors
-                                                                    .baseColorBlack),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 129.w,
-                                                            child: Text(
-                                                              '${menu[index].description}',
+                                                        Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              '${menu[index].name}',
                                                               style: TextStyles
-                                                                  .body1(AppColors
-                                                                      .baseColorOffWhiteShade),
+                                                                  .body2Strong(AppColors
+                                                                      .baseColorBlack),
                                                             ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Text(
-                                                            '\$${menu[index].price}',
-                                                            style: TextStyles
-                                                                .body1Strong(
-                                                                    const Color(
-                                                                        0xff02308E)),
-                                                          ),
-                                                          foodViewModel
-                                                                      .getItemCount(
-                                                                          index) >
-                                                                  0
-                                                              ? Container(
-                                                                  height: 20.h,
-                                                                  width: 60.w,
-                                                                  decoration: BoxDecoration(
-                                                                      color: Colors
-                                                                          .transparent,
-                                                                      borderRadius: BorderRadius.circular(3),
-                                                                      border: Border.all(
-                                                                          color: AppColors
-                                                                              .primaryColor)),
-                                                                  child: Row(
-                                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                                    children: [
-                                                                      InkWell(
-                                                                        child: Icon(Icons.remove, size: 10.sp),
-                                                                        onTap: (){
-                                                                          foodViewModel.decrementItemCount(index);
-                                                                        },
-                                                                      ),
-                                                                      Text(
-                                                                        '${foodViewModel.getItemCount(index)}',
-                                                                      ),
-                                                                      InkWell(
-                                                                        child:Icon(
-                                                                            Icons.add,
-                                                                            size: 10.sp) ,
-                                                                        onTap: (){
-                                                                          foodViewModel.incrementItemCount(index);
-                                                                        },
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                )
-                                                              : GestureDetector(
-                                                                  onTap: () {
-                                                                    foodViewModel
-                                                                        .incrementItemCount(
-                                                                            index);
-                                                                  },
-                                                                  child:
-                                                                      Container(
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      color: AppColors
-                                                                          .baseColorOffWhite,
-                                                                      border: Border.all(
-                                                                          color: AppColors
-                                                                              .primaryColor),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              5),
+                                                            SizedBox(
+                                                              width: 129.w,
+                                                              child: Text(
+                                                                '${menu[index].description}',
+                                                                style: TextStyles
+                                                                    .body1(AppColors
+                                                                        .baseColorOffWhiteShade),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Text(
+                                                              '\$${menu[index].price}',
+                                                              style: TextStyles
+                                                                  .body1Strong(
+                                                                      const Color(
+                                                                          0xff02308E)),
+                                                            ),
+                                                            foodViewModel
+                                                                        .getItemCount(
+                                                                            index) >
+                                                                    0
+                                                                ? Container(
+                                                                    height: 20.h,
+                                                                    width: 60.w,
+                                                                    decoration: BoxDecoration(
+                                                                        color: Colors
+                                                                            .transparent,
+                                                                        borderRadius: BorderRadius.circular(3),
+                                                                        border: Border.all(
+                                                                            color: AppColors
+                                                                                .primaryColor)),
+                                                                    child: Row(
+                                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                                      children: [
+                                                                        InkWell(
+                                                                          child: Icon(Icons.remove, size: 10.sp),
+                                                                          onTap: (){
+                                                                            foodViewModel.decrementItemCount(index);
+                                                                          },
+                                                                        ),
+                                                                        Text(
+                                                                          '${foodViewModel.getItemCount(index)}',
+                                                                        ),
+                                                                        InkWell(
+                                                                          child:Icon(
+                                                                              Icons.add,
+                                                                              size: 10.sp) ,
+                                                                          onTap: (){
+                                                                            foodViewModel.incrementItemCount(index);
+                                                                          },
+                                                                        ),
+                                                                      ],
                                                                     ),
+                                                                  )
+                                                                : GestureDetector(
+                                                                    onTap: () {
+                                                                      foodViewModel
+                                                                          .incrementItemCount(
+                                                                              index);
+                                                                    },
                                                                     child:
-                                                                        Padding(
-                                                                      padding: EdgeInsets.symmetric(
-                                                                          horizontal: 20
-                                                                              .w,
-                                                                          vertical:
-                                                                              5.h),
-                                                                      child: Text(
-                                                                        'Add',
-                                                                        style: TextStyles.body1(
-                                                                            AppColors
-                                                                                .baseColorBlack),
+                                                                        Container(
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        color: AppColors
+                                                                            .baseColorOffWhite,
+                                                                        border: Border.all(
+                                                                            color: AppColors
+                                                                                .primaryColor),
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(
+                                                                                5),
+                                                                      ),
+                                                                      child:
+                                                                          Padding(
+                                                                        padding: EdgeInsets.symmetric(
+                                                                            horizontal: 20
+                                                                                .w,
+                                                                            vertical:
+                                                                                5.h),
+                                                                        child: Text(
+                                                                          'Add',
+                                                                          style: TextStyles.body1(
+                                                                              AppColors
+                                                                                  .baseColorBlack),
+                                                                        ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                )
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 10.h),
-                                                  // Add some space between rows
-                                                  AnyImageView(
-                                                      imagePath:
-                                                          'assets/dotline.png',
-                                                      boxFit: BoxFit.fill),
-                                                ],
+                                                                  )
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(height: 10.h),
+                                                    // Add some space between rows
+                                                    AnyImageView(
+                                                        imagePath:
+                                                            'assets/dotline.png',
+                                                        boxFit: BoxFit.fill),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                        },
+                                            );
+                                          },
+                                        ),
+                                      )
+                                    : Center(
+                                        child: Text(
+                                          'No menu items available.',
+                                          style: TextStyles.body1(
+                                              AppColors.baseColorBlack),
+                                        ),
                                       ),
-                                    )
-                                  : Center(
-                                      child: Text(
-                                        'No menu items available.',
-                                        style: TextStyles.body1(
-                                            AppColors.baseColorBlack),
-                                      ),
-                                    ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  foodViewModel.isLoadingState
-                      ? const Center(
-                    child: CircularProgressIndicator(
-                        color: AppColors.primaryColor),
-                  ):menu !=null ?
-                  Container(
-                    height: 200.h,
-                    decoration: const BoxDecoration(
-                      color: AppColors.baseColorLightOrange,
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(20),
-                        topLeft: Radius.circular(20),
+                    foodViewModel.isLoadingState
+                        ? const Center(
+                      child: CircularProgressIndicator(
+                          color: AppColors.primaryColor),
+                    ):menu !=null ?
+                    Container(
+                      height: 200.h,
+                      decoration: const BoxDecoration(
+                        color: AppColors.baseColorLightOrange,
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(20),
+                          topLeft: Radius.circular(20),
+                        ),
                       ),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 30.h, horizontal: 30.w),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Subtotal',
-                                style: TextStyles.body3Strong(
-                                    AppColors.baseColorBlack),
-                              ),
-                              Text(
-                                '\$${foodViewModel.getSubtotal()}',
-                                style: TextStyles.body2Strong(
-                                    AppColors.primaryColor),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 15.h),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Vat(5%) Service Charge included (5%)',
-                                style:
-                                    TextStyles.body2(const Color(0xff02308E)),
-                              ),
-                              Text(
-                                '\$${foodViewModel.getVat()}',
-                                style: TextStyles.body2Strong(
-                                    AppColors.baseColorBlack),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10.h),
-                          Container(height: 1.h, color: AppColors.primaryColor),
-                          SizedBox(height: 10.h),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Total',
-                                style: TextStyles.body3Strong(
-                                    AppColors.baseColorBlack),
-                              ),
-                              Text(
-                                '\$${foodViewModel.getTotal()}',
-                                style: TextStyles.caption1Strong(
-                                    AppColors.primaryColor),
-                              ),
-                            ],
-                          ),
-                        ],
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 30.h, horizontal: 30.w),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Subtotal',
+                                  style: TextStyles.body3Strong(
+                                      AppColors.baseColorBlack),
+                                ),
+                                Text(
+                                  '\$${foodViewModel.getSubtotal()}',
+                                  style: TextStyles.body2Strong(
+                                      AppColors.primaryColor),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 15.h),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Vat(5%) Service Charge included (5%)',
+                                  style:
+                                      TextStyles.body2(const Color(0xff02308E)),
+                                ),
+                                Text(
+                                  '\$${foodViewModel.getVat()}',
+                                  style: TextStyles.body2Strong(
+                                      AppColors.baseColorBlack),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 10.h),
+                            Container(height: 1.h, color: AppColors.primaryColor),
+                            SizedBox(height: 10.h),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Total',
+                                  style: TextStyles.body3Strong(
+                                      AppColors.baseColorBlack),
+                                ),
+                                Text(
+                                  '\$${foodViewModel.getTotal()}',
+                                  style: TextStyles.caption1Strong(
+                                      AppColors.primaryColor),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ):const SizedBox.shrink(),
-                ],
+                    ):const SizedBox.shrink(),
+                  ],
+                ),
               ),
             ),
           ),
