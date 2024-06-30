@@ -1,11 +1,13 @@
 import 'package:add_to_cart/utils/colors.dart';
 import 'package:add_to_cart/utils/text_styles.dart';
 import 'package:add_to_cart/view/widget/animation.dart';
+import 'package:add_to_cart/view/widget/no_internet.dart';
 import 'package:add_to_cart/viewModel/food_view_model.dart';
 import 'package:any_image_view/any_image_view.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:provider/provider.dart';
 
 class AddToCartScreen extends StatefulWidget {
@@ -20,9 +22,12 @@ class _AddToCartScreenState extends State<AddToCartScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final foodViewModel = Provider.of<FoodViewModel>(context, listen: false);
-      foodViewModel.FoodListFetch(context);
+    _loadData(context);
     });
+  }
+  Future<void> _loadData(BuildContext context) async{
+    final foodViewModel = Provider.of<FoodViewModel>(context, listen: false);
+    foodViewModel.FoodListFetch(context);
   }
 
   @override
@@ -33,7 +38,13 @@ class _AddToCartScreenState extends State<AddToCartScreen> {
 
         return Scaffold(
           backgroundColor: Colors.white,
-          body: SafeArea(
+          body:Provider.of<InternetConnectionStatus>(context) ==
+              InternetConnectionStatus.disconnected
+              ? NoInternetWidget(
+            onPressed: () {
+              _loadData(context);
+            },
+          ): SafeArea(
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -95,7 +106,7 @@ class _AddToCartScreenState extends State<AddToCartScreen> {
                           ),
                           SizedBox(height: 20.h),
                           foodViewModel.isLoadingState
-                              ? Center(
+                              ? const Center(
                                   child: CircularProgressIndicator(
                                       color: AppColors.primaryColor),
                                 )
@@ -300,7 +311,7 @@ class _AddToCartScreenState extends State<AddToCartScreen> {
                     ),
                   ),
                   foodViewModel.isLoadingState
-                      ? Center(
+                      ? const Center(
                     child: CircularProgressIndicator(
                         color: AppColors.primaryColor),
                   ):menu !=null ?
@@ -371,7 +382,7 @@ class _AddToCartScreenState extends State<AddToCartScreen> {
                         ],
                       ),
                     ),
-                  ):SizedBox.shrink(),
+                  ):const SizedBox.shrink(),
                 ],
               ),
             ),

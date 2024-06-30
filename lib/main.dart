@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -30,14 +31,20 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return ChangeNotifierProvider(
           create: (context) => FoodViewModel(),
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Add To Cart Design',
-            theme: ThemeData(
-              primarySwatch: Colors.grey,
-              textTheme: GoogleFonts.interTextTheme(),
+          child: StreamProvider<InternetConnectionStatus>(
+            initialData: InternetConnectionStatus.connected,
+            create: (_){
+              return InternetConnectionChecker().onStatusChange;
+            },
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Add To Cart Design',
+              theme: ThemeData(
+                primarySwatch: Colors.grey,
+                textTheme: GoogleFonts.interTextTheme(),
+              ),
+              home: const AddToCartScreen(),
             ),
-            home: const AddToCartScreen(),
           ),
         );
       },
