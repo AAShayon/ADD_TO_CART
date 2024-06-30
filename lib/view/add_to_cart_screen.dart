@@ -217,13 +217,6 @@ class _AddToCartScreenState extends State<AddToCartScreen> {
                                                                         foodViewModel.decrementItemCount(index);
                                                                       },
                                                                     ),
-                                                                    // IconButton(
-                                                                    //   icon: Icon(Icons.remove, size: 10.sp),
-                                                                    //   onPressed:
-                                                                    //       () {
-                                                                    //     foodViewModel.decrementItemCount(index);
-                                                                    //   },
-                                                                    // ),
                                                                     Text(
                                                                       '${foodViewModel.getItemCount(index)}',
                                                                     ),
